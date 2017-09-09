@@ -42,7 +42,6 @@ export default {
   name: 'app',
   created () {
     rem.defaultFontSize
-    console.log(storage.get('articles').length)
     if (storage.get('articles').length > 0) {
       this.saveTotal = storage.get('articles')
     }
@@ -105,12 +104,15 @@ export default {
           dev: 1
         }
       }).then((res) => {
-        console.log(res.data.data)
         this.article = res.data.data
       })
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     NPArticle (data) {
+      if (data > new Date().Format('yyyyMMdd')) {
+        alert('已是最后一天，请浏览之前的文章')
+        return
+      }
       document.body.style.overflow = 'auto'
       this.showS = false
       this.$ajax({
@@ -122,7 +124,6 @@ export default {
           date: data
         }
       }).then((res) => {
-        console.log(res.data.data)
         this.article = res.data.data
       })
       document.body.scrollTop = document.documentElement.scrollTop = 0
@@ -136,7 +137,6 @@ export default {
           dev: 1
         }
       }).then((res) => {
-        console.log(res.data.data)
         this.article = res.data.data
       })
       document.body.scrollTop = document.documentElement.scrollTop = 0
