@@ -1,5 +1,5 @@
 //时间
-Date.prototype.Format = function (fmt) { //author: meizz 
+Date.prototype.Format = function (fmt) { //author: jzq
     var o = {
         "M+": this.getMonth() + 1, //月份 
         "d+": this.getDate(), //日 

@@ -14,14 +14,16 @@
               <img src="../assets/suiji.png" alt="">
               随机
             </li>
-            <li @click="goNext">
-              <img src="../assets/next.png" alt="">
-              后一天
-            </li>
-            <li @click="getToday">
-              <img src="../assets/today.png" alt="">
-              今日
-            </li>
+            <div v-if="isToday">
+              <li @click="goNext">
+                <img src="../assets/next.png" alt="">
+                后一天
+              </li>
+              <li @click="getToday">
+                <img src="../assets/today.png" alt="">
+                今日
+              </li>
+            </div>
           </ul>
     </div>
 </template>
@@ -72,12 +74,22 @@ export default {
   props: ['article', 'save'],
   data () {
     return {
-      saved: this.save
+      saved: this.save,
+      now: ''
     }
   },
   watch: {
-    save: function () {
+    save () {
       this.saved = this.save
+    }
+  },
+  beforeUpdate () {
+    this.now = this.article.date.curr
+  },
+  computed: {
+    isToday () {
+      console.log()
+      return this.now < new Date().Format('yyyyMMdd')
     }
   },
   methods: {
@@ -88,7 +100,6 @@ export default {
         saveArticle.title = this.article.title
         saveArticle.author = this.article.author
         saveArticle.date = this.article.date.curr
-        console.log(saveArticle)
         this.$emit('Save', saveArticle)
       } else {
         this.$emit('removeSave', this.article.title)

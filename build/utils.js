@@ -31,7 +31,6 @@ exports.cssLoaders = function (options) {
         })
       })
     }
-git remote add origin https://github.com/zhixiaoqiang/mryw.git
     // Extract CSS when that option is specified
     // (which is the case during production build)
     if (options.extract) {

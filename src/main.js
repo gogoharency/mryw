@@ -5,7 +5,6 @@ import App from './App'
 import router from './router'
 import axios from 'axios'
 import '../static/utils'
-console.log(new Date().Format('yyyyMMdd'))
 Vue.prototype.$ajax = axios
 Vue.config.productionTip = false
 

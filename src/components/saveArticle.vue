@@ -60,7 +60,7 @@ export default {
       this.$emit('go', data)
     },
     hideCur () {
-      this.$emit('hide')
+      this.$emit('hide', 1)
     }
   }
 }

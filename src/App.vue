@@ -79,6 +79,7 @@ export default {
     },
     rightMenus () {
       this.rightmenu = !this.rightmenu
+      document.body.style.overflow = 'hidden'
     },
     hideMenu () {
       if (this.rightmenu || this.leftmenu || this.setting) {
@@ -86,8 +87,12 @@ export default {
         this.rightmenu = false
         this.setting = false
       }
+      document.body.style.overflow = 'auto'
     },
-    showSave () {
+    showSave (val) {
+      if (val !== '') {
+        document.body.style.overflow = 'auto'
+      }
       this.leftmenu = false
       this.showS = !this.showS
     },
@@ -96,6 +101,7 @@ export default {
     },
   // 获取文章
     getArticle () {
+      this.rightmenu = false
       this.$ajax({
         methods: 'get',
         baseURL: '/article',
@@ -109,6 +115,7 @@ export default {
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     NPArticle (data) {
+      this.rightmenu = false
       if (data > new Date().Format('yyyyMMdd')) {
         alert('已是最后一天，请浏览之前的文章')
         return
@@ -129,6 +136,7 @@ export default {
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     randomArticle () {
+      this.rightmenu = false
       this.$ajax({
         methods: 'get',
         baseURL: '/article',
@@ -142,10 +150,12 @@ export default {
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     Save (data) {
+      this.rightmenu = false
       this.saveTotal.unshift(data)
       storage.set('articles', this.saveTotal)
     },
     removeSave (data) {
+      this.rightmenu = false
       for (let item in this.saveTotal) {
         if (this.saveTotal[item].title === data) {
           this.saveTotal.splice(item, 1)
