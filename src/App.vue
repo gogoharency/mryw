@@ -1,11 +1,13 @@
 <template>
-  <div id="app" :style="{'background-color': Ibg}" :class="{ marL: leftmenu,Inight: night }" @click="hideMenu">
+  <div id="app"
+   :style="{'background-color': Ibg}"
+   :class="{ marL: leftmenu,Inight: night }"
+   v-on="{click:hideMenu,touchstart:ts,touchmove:tm,touchend:te}">
 <!--     <img src="./assets/logo.png"> -->
     <header id="header">
       <img src="./assets/menu.png" @click.stop="leftMenus">
       <img src="./assets/portmenu.png"  @click.stop="rightMenus">
     </header>
-
     <leftMenu
      v-on="{setting:Setting,showSave:showSave}"
      :class="{ L : leftmenu }"
@@ -28,6 +30,9 @@
      :class="{hideSetting:setting}"
      ></setting>
     <saveArticle v-on="{hide:showSave,go:NPArticle}" :saveArticles="saveTotal" :class="{showSave :showS}"></saveArticle>
+    <transition name="sc">
+      <span class="SC" v-if="isSC">{{ issc ? '收藏成功' : '取消收藏' }}</span>
+    </transition>
   </div>
 </template>
 
@@ -45,6 +50,7 @@ export default {
     if (storage.get('articles').length > 0) {
       this.saveTotal = storage.get('articles')
     }
+    this.wWidth = window.innerWidth
   },
   mounted () {
     this.getArticle()
@@ -58,7 +64,11 @@ export default {
       setting: false,
       Ibg: '#fafafa',
       saveTotal: [],
-      showS: false
+      showS: false,
+      isSC: false,
+      issc: true,
+      wWidth: '',
+      touchPoint: {}
     }
   },
   components: {
@@ -68,6 +78,33 @@ export default {
     saveArticle
   },
   methods: {
+  // 手指滑动
+    ts (e) {
+      var point = e.targetTouches[0].clientX
+      this.touchPoint.startX = point
+    },
+    tm (e) {
+      var point = e.targetTouches[0]
+      this.touchPoint.stopX = point.clientX
+    },
+    te (e) {
+      var distand = this.touchPoint.stopX - this.touchPoint.startX
+      if (distand > 20 && !this.leftmenu) {
+        if (this.touchPoint.startX <= this.wWidth / 4 && !this.rightmenu) {
+          this.leftMenus()
+        }
+        this.rightmenu = false
+      } else if (distand < -20) {
+        if (this.leftmenu) {
+          this.leftMenus()
+        } else {
+          if (this.touchPoint.startX >= this.wWidth * 3 / 4 && !this.leftmenu) {
+            this.rightMenus()
+          }
+        }
+      }
+      this.touchPoint = {}
+    },
   // 左右菜单栏
     leftMenus () {
       this.leftmenu = !this.leftmenu
@@ -150,11 +187,21 @@ export default {
       document.body.scrollTop = document.documentElement.scrollTop = 0
     },
     Save (data) {
+      this.isSC = true
+      this.issc = true
+      setTimeout(() => {
+        this.isSC = false
+      }, 500)
       this.rightmenu = false
       this.saveTotal.unshift(data)
       storage.set('articles', this.saveTotal)
     },
     removeSave (data) {
+      this.isSC = true
+      this.issc = false
+      setTimeout(() => {
+        this.isSC = false
+      }, 500)
       this.rightmenu = false
       for (let item in this.saveTotal) {
         if (this.saveTotal[item].title === data) {
@@ -205,7 +252,7 @@ export default {
   body{
     font-size: .35rem;
     margin: 0 auto;
-    /*overflow: hidden;*/
+    user-select: none;
   }
   ul li{
     list-style: none;
@@ -253,5 +300,24 @@ export default {
     top: 0 !important;
     left: 0 !important;
     transition:opacity .3s,top .3s, left 0s !important;
+  }
+  .SC{
+    position: fixed;
+    top: 50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    background: rgba(0,0,0,.8);
+    border-radius: 8px;
+    color: #fff;
+    padding: .3rem .6rem;
+  }
+  .sc-leave-active{
+    transition: .1s .2s;
+  }
+  .sc-enter-active{
+    transition: .1s;
+  }
+  .sc-enter,.sc-leave-to{
+    opacity: 0;
   }
 </style>

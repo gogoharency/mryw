@@ -21,6 +21,11 @@
   padding: .2rem;
   margin-top: .8rem;
 }
+@media screen and (min-width: 390px) {
+  .content{
+    margin-top: .6rem;
+  }
+}
 .content_c{
   text-align: left;
 }
